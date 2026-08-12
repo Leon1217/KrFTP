@@ -66,25 +66,25 @@ class LoginDialog(QDialog):
         self.setFixedSize(880, 640)
         self.setStyleSheet("""
             QDialog { background: #ffffff; font-family: 'Microsoft YaHei UI', 'Segoe UI'; }
-            QFrame#brandPanel { background: #1d3434; }
+            QFrame#brandPanel { background: #1e293b; }
             QLabel#brandName { color: #ffffff; font-size: 30px; font-weight: 700; }
-            QLabel#brandCaption { color: #b9d2cd; font-size: 14px; }
-            QLabel#brandFooter { color: #89aaa4; font-size: 12px; }
-            QLabel#formEyebrow { color: #0f766e; font-size: 12px; font-weight: 700; }
+            QLabel#brandCaption { color: #bfdbfe; font-size: 14px; }
+            QLabel#brandFooter { color: #94a3b8; font-size: 12px; }
+            QLabel#formEyebrow { color: #2563eb; font-size: 12px; font-weight: 700; }
             QLabel#formTitle { color: #17212b; font-size: 25px; font-weight: 700; }
             QLabel#formHint { color: #64748b; font-size: 13px; }
             QLabel#fieldLabel { color: #334155; font-size: 12px; font-weight: 700; }
             QLineEdit { background: #ffffff; border: 1px solid #c7d1d5; border-radius: 8px; min-height: 43px; padding: 0 12px; color: #17212b; font-size: 14px; }
-            QLineEdit:focus { border: 2px solid #0f766e; }
+            QLineEdit:focus { border: 2px solid #2563eb; }
             QComboBox { background: #ffffff; color: #17212b; border: 1px solid #c7d1d5; border-radius: 8px; min-height: 43px; padding: 0 42px 0 12px; font-size: 14px; }
-            QComboBox:hover { border-color: #6d8d88; background: #fbfdfd; }
-            QComboBox:focus, QComboBox:on { border: 2px solid #0f766e; }
+            QComboBox:hover { border-color: #60a5fa; background: #f8faff; }
+            QComboBox:focus, QComboBox:on { border: 2px solid #2563eb; }
             QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: top right; width: 38px; border: none; border-left: 1px solid #dce3e6; border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
-            QComboBox QAbstractItemView { background: #ffffff; color: #17212b; border: 1px solid #b7c9c5; border-radius: 8px; outline: none; padding: 5px; selection-background-color: #dcefe9; selection-color: #0b504a; }
+            QComboBox QAbstractItemView { background: #ffffff; color: #17212b; border: 1px solid #bfdbfe; border-radius: 8px; outline: none; padding: 5px; selection-background-color: #dbeafe; selection-color: #1e3a8a; }
             QComboBox QAbstractItemView::item { min-height: 32px; padding: 0 10px; border-radius: 5px; }
-            QComboBox QAbstractItemView::item:hover { background: #edf6f3; }
-            QPushButton#loginButton { background: #0f766e; color: #ffffff; border: none; border-radius: 8px; min-height: 44px; font-size: 14px; font-weight: 700; }
-            QPushButton#loginButton:hover { background: #0b625b; }
+            QComboBox QAbstractItemView::item:hover { background: #eff6ff; }
+            QPushButton#loginButton { background: #2563eb; color: #ffffff; border: none; border-radius: 8px; min-height: 44px; font-size: 14px; font-weight: 700; }
+            QPushButton#loginButton:hover { background: #1d4ed8; }
             QLabel#status { color: #b42318; font-size: 12px; min-height: 22px; }
             QLabel#accountHint { color: #7a5b1d; background: #fff8e8; border: 1px solid #f1d99a; border-radius: 8px; padding: 10px 12px; }
         """)

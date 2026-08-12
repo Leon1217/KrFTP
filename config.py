@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
+# A frozen PyInstaller application must keep writable state beside the exe,
+# not inside its bundled runtime directory.
+BASE_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 DATABASE_PATH = DATA_DIR / "krftp.sqlite3"
 RESOURCE_DIR = BASE_DIR / "resource"
