@@ -11,6 +11,7 @@ $ErrorActionPreference = "Stop"
     --onedir `
     --name "krFTP" `
     --icon "resource/images/logo.ico" `
+    --version-file "version_info.txt" `
     --add-data "i18n/*.qm;i18n" `
     --add-data "LICENSE;." `
     --add-data "NOTICE.txt;." `
