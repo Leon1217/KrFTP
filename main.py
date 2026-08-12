@@ -60,6 +60,7 @@ def main() -> int:
     if login.exec() != LoginDialog.Accepted:
         return 0
     window = MainWindow(db, ServiceManager(db), login.user, icon, languages)
+    app.aboutToQuit.connect(window.shutdown)
     window.show()
     return app.exec()
 

@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from PySide6.QtCore import QDateTime, QTimer, Qt
+from PySide6.QtCore import QCoreApplication, QDateTime, QTimer, Qt
 from PySide6.QtGui import QAction, QFontMetrics, QGuiApplication
 from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QDateTimeEdit, QDialog, QDialogButtonBox, QFileDialog, QFrame,
@@ -970,13 +970,27 @@ class MainWindow(QMainWindow):
         self.restore_window()
 
     def quit_application(self):
+        self._quit_requested = True
+        self.shutdown()
+        self.hide()
+        QCoreApplication.exit(0)
+
+    def shutdown(self):
+        """Release all runtime resources exactly once before application exit."""
+        if getattr(self, "_shutdown_complete", False):
+            return
+        self._shutdown_complete = True
+        if hasattr(self, "timer"):
+            self.timer.stop()
         if hasattr(self, "tray"):
             self.tray.hide()
-        self.services.stop_all(); self._quit_requested = True; self.close()
+        self.services.stop_all()
+        self.db.close()
 
     def closeEvent(self, event):
         if getattr(self, "_quit_requested", False):
-            self.services.stop_all(); event.accept()
+            self.shutdown()
+            event.accept()
         elif not hasattr(self, "tray") or not self.tray_available or not self.tray.isVisible():
             self.showNormal(); event.ignore()
         else:

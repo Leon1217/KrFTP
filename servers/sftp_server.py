@@ -170,11 +170,18 @@ class SftpService:
             process.exit(1)
 
     def stop(self) -> None:
-        if self.loop and self.listener:
+        loop, listener, thread = self.loop, self.listener, self.thread
+        if loop and listener and not loop.is_closed():
             async def close_listener():
-                self.listener.close()
-                await self.listener.wait_closed()
-            asyncio.run_coroutine_threadsafe(close_listener(), self.loop).result(timeout=5)
-            self.loop.call_soon_threadsafe(self.loop.stop)
+                listener.close()
+                await listener.wait_closed()
+            try:
+                asyncio.run_coroutine_threadsafe(close_listener(), loop).result(timeout=5)
+                loop.call_soon_threadsafe(loop.stop)
+            except (RuntimeError, TimeoutError):
+                pass
+        if thread and thread.is_alive() and thread is not threading.current_thread():
+            thread.join(timeout=6)
         self.listener = None
         self.thread = None
+        self.loop = None

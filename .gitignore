@@ -18,6 +18,7 @@ venv/
 build/
 dist/
 *.spec
+installer/Output/
 
 # Generated previews and operating-system metadata
 login-hint-preview.png

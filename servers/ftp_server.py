@@ -170,7 +170,10 @@ class FtpService:
         self.thread.start()
 
     def stop(self) -> None:
-        if self.server:
-            self.server.close_all()
+        server, thread = self.server, self.thread
+        if server:
+            server.close_all()
+        if thread and thread.is_alive() and thread is not threading.current_thread():
+            thread.join(timeout=3)
         self.server = None
         self.thread = None
