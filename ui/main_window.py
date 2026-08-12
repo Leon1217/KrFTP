@@ -120,6 +120,19 @@ LOG_FILTER_TEXT = {
     "ru_RU": ["Все пользователи", "Все протоколы", "Все действия", "IP-адрес", "Период", "Начало", "Окончание", "Поиск", "Сброс", "На странице", "Назад", "Далее", "Страница {page} / {pages}, всего {total}"],
 }
 
+TRAY_TEXT = {
+    "zh_CN": ["显示管理控制台", "启动 FTP/SFTP 服务", "停止 FTP/SFTP 服务", "退出 krFTP", "服务继续在系统托盘中运行。"],
+    "en_US": ["Show Management Console", "Start FTP/SFTP Services", "Stop FTP/SFTP Services", "Exit krFTP", "Services continue running in the system tray."],
+    "zh_TW": ["顯示管理控制台", "啟動 FTP/SFTP 服務", "停止 FTP/SFTP 服務", "結束 krFTP", "服務會繼續在系統匣中運行。"],
+    "ja_JP": ["管理コンソールを表示", "FTP/SFTP サービスを開始", "FTP/SFTP サービスを停止", "krFTP を終了", "サービスはシステムトレイで引き続き実行されます。"],
+    "ko_KR": ["관리 콘솔 표시", "FTP/SFTP 서비스 시작", "FTP/SFTP 서비스 중지", "krFTP 종료", "서비스는 시스템 트레이에서 계속 실행됩니다."],
+    "es_ES": ["Mostrar consola de administración", "Iniciar servicios FTP/SFTP", "Detener servicios FTP/SFTP", "Salir de krFTP", "Los servicios continúan ejecutándose en la bandeja del sistema."],
+    "fr_FR": ["Afficher la console d'administration", "Démarrer les services FTP/SFTP", "Arrêter les services FTP/SFTP", "Quitter krFTP", "Les services continuent de s'exécuter dans la zone de notification."],
+    "de_DE": ["Verwaltungskonsole anzeigen", "FTP/SFTP-Dienste starten", "FTP/SFTP-Dienste stoppen", "krFTP beenden", "Die Dienste werden weiterhin im Infobereich ausgeführt."],
+    "pt_BR": ["Mostrar console de gerenciamento", "Iniciar serviços FTP/SFTP", "Parar serviços FTP/SFTP", "Sair do krFTP", "Os serviços continuam em execução na bandeja do sistema."],
+    "ru_RU": ["Показать консоль управления", "Запустить службы FTP/SFTP", "Остановить службы FTP/SFTP", "Выйти из krFTP", "Службы продолжают работать в системном трее."],
+}
+
 
 class PasswordChangeDialog(QDialog):
     def __init__(self, parent=None):
@@ -345,6 +358,7 @@ class MainWindow(QMainWindow):
         self.about_version.setText(dialog["about_version"])
         self.about_copyright.setText(dialog["copyright"])
         self.about_author_contact.setText(dialog["author_contact"])
+        self._retranslate_tray()
         self.refresh_live_data(); self.refresh_logs(); self.refresh_users()
 
     def _resize_navigation(self):
@@ -752,13 +766,22 @@ class MainWindow(QMainWindow):
 
     def _create_tray(self):
         self.tray = QSystemTrayIcon(self.app_icon, self)
-        menu = QMenu(self)
-        show_action = QAction("显示管理控制台", self); show_action.triggered.connect(self.restore_window)
-        start_action = QAction("启动 FTP/SFTP 服务", self); start_action.triggered.connect(self.start_services)
-        stop_action = QAction("停止 FTP/SFTP 服务", self); stop_action.triggered.connect(self.stop_services)
-        quit_action = QAction("退出 krFTP", self); quit_action.triggered.connect(self.quit_application)
-        menu.addAction(show_action); menu.addSeparator(); menu.addAction(start_action); menu.addAction(stop_action); menu.addSeparator(); menu.addAction(quit_action)
-        self.tray.setContextMenu(menu); self.tray.activated.connect(lambda reason: self.restore_window() if reason == QSystemTrayIcon.Trigger else None); self.tray.show()
+        self.tray_menu = QMenu(self)
+        self.tray_show_action = QAction(self); self.tray_show_action.triggered.connect(self.restore_window)
+        self.tray_start_action = QAction(self); self.tray_start_action.triggered.connect(self.start_services)
+        self.tray_stop_action = QAction(self); self.tray_stop_action.triggered.connect(self.stop_services)
+        self.tray_quit_action = QAction(self); self.tray_quit_action.triggered.connect(self.quit_application)
+        self.tray_menu.addAction(self.tray_show_action); self.tray_menu.addSeparator(); self.tray_menu.addAction(self.tray_start_action); self.tray_menu.addAction(self.tray_stop_action); self.tray_menu.addSeparator(); self.tray_menu.addAction(self.tray_quit_action)
+        self.tray.setContextMenu(self.tray_menu); self.tray.activated.connect(lambda reason: self.restore_window() if reason == QSystemTrayIcon.Trigger else None)
+        self._retranslate_tray()
+        self.tray.show()
+
+    def _retranslate_tray(self):
+        if not hasattr(self, "tray"):
+            return
+        text = TRAY_TEXT.get(self.locale, TRAY_TEXT["zh_CN"])
+        self.tray_show_action.setText(text[0]); self.tray_start_action.setText(text[1]); self.tray_stop_action.setText(text[2]); self.tray_quit_action.setText(text[3])
+        self.tray_tooltip_message = text[4]
 
     def restore_window(self):
         self.showNormal(); self.raise_(); self.activateWindow()
@@ -783,4 +806,4 @@ class MainWindow(QMainWindow):
         if getattr(self, "_quit_requested", False):
             self.services.stop_all(); event.accept()
         else:
-            self.hide(); self.tray.showMessage("krFTP", "服务继续在系统托盘中运行。", QSystemTrayIcon.Information, 2500); event.ignore()
+            self.hide(); self.tray.showMessage("krFTP", self.tray_tooltip_message, QSystemTrayIcon.Information, 2500); event.ignore()
