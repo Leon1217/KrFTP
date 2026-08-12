@@ -29,29 +29,53 @@ LOGIN_TEXT = {
     "ru_RU": ["Вход в krFTP", "Консоль служб FTP / SFTP", "Безопасное управление · Централизованный аудит · Сеансы", "ДОСТУП АДМИНИСТРАТОРА", "Вход в консоль управления", "Введите учетные данные для продолжения.", "Имя пользователя", "Введите имя пользователя", "Пароль", "Введите пароль", "Язык", "Войти", "Первый запуск: имя admin, пароль admin123. После входа измените пароль администратора.", "Имя пользователя или пароль недействительны, отключены или истекли."],
 }
 
+INITIAL_PASSWORD_TEXT = {
+    "zh_CN": ["设置管理员密码", "首次登录，请设置新的管理员密码", "为保护管理控制台，请立即替换默认密码。", "新密码", "至少 8 个字符", "确认密码", "再次输入新密码", "保存并继续", "密码至少需要 8 个字符。", "两次输入的密码不一致。"],
+    "en_US": ["Set Administrator Password", "Set a new administrator password", "To protect the management console, replace the default password now.", "New password", "At least 8 characters", "Confirm password", "Enter the new password again", "Save and continue", "The password must contain at least 8 characters.", "The two passwords do not match."],
+    "zh_TW": ["設定管理員密碼", "首次登入，請設定新的管理員密碼", "為保護管理控制台，請立即替換預設密碼。", "新密碼", "至少 8 個字元", "確認密碼", "再次輸入新密碼", "儲存並繼續", "密碼至少需要 8 個字元。", "兩次輸入的密碼不一致。"],
+    "ja_JP": ["管理者パスワードを設定", "新しい管理者パスワードを設定", "管理コンソールを保護するため、既定のパスワードを今すぐ変更してください。", "新しいパスワード", "8 文字以上", "パスワードを確認", "新しいパスワードをもう一度入力", "保存して続行", "パスワードは 8 文字以上必要です。", "2 回入力したパスワードが一致しません。"],
+    "ko_KR": ["관리자 비밀번호 설정", "새 관리자 비밀번호를 설정하세요", "관리 콘솔을 보호하려면 기본 비밀번호를 지금 변경하세요.", "새 비밀번호", "8자 이상", "비밀번호 확인", "새 비밀번호를 다시 입력", "저장하고 계속", "비밀번호는 8자 이상이어야 합니다.", "두 비밀번호가 일치하지 않습니다."],
+    "es_ES": ["Establecer contraseña de administrador", "Establezca una nueva contraseña de administrador", "Para proteger la consola de administración, reemplace ahora la contraseña predeterminada.", "Nueva contraseña", "Al menos 8 caracteres", "Confirmar contraseña", "Vuelva a introducir la nueva contraseña", "Guardar y continuar", "La contraseña debe tener al menos 8 caracteres.", "Las dos contraseñas no coinciden."],
+    "fr_FR": ["Définir le mot de passe administrateur", "Définissez un nouveau mot de passe administrateur", "Pour protéger la console, remplacez maintenant le mot de passe par défaut.", "Nouveau mot de passe", "Au moins 8 caractères", "Confirmer le mot de passe", "Saisissez à nouveau le nouveau mot de passe", "Enregistrer et continuer", "Le mot de passe doit contenir au moins 8 caractères.", "Les deux mots de passe ne correspondent pas."],
+    "de_DE": ["Administratorkennwort festlegen", "Neues Administratorkennwort festlegen", "Ersetzen Sie jetzt das Standardkennwort, um die Verwaltungskonsole zu schützen.", "Neues Kennwort", "Mindestens 8 Zeichen", "Kennwort bestätigen", "Neues Kennwort erneut eingeben", "Speichern und fortfahren", "Das Kennwort muss mindestens 8 Zeichen enthalten.", "Die beiden Kennwörter stimmen nicht überein."],
+    "pt_BR": ["Definir senha de administrador", "Defina uma nova senha de administrador", "Para proteger o console de gerenciamento, altere agora a senha padrão.", "Nova senha", "Pelo menos 8 caracteres", "Confirmar senha", "Digite a nova senha novamente", "Salvar e continuar", "A senha deve ter pelo menos 8 caracteres.", "As duas senhas não coincidem."],
+    "ru_RU": ["Установить пароль администратора", "Установите новый пароль администратора", "Чтобы защитить консоль управления, замените пароль по умолчанию.", "Новый пароль", "Не менее 8 символов", "Подтвердите пароль", "Введите новый пароль ещё раз", "Сохранить и продолжить", "Пароль должен содержать не менее 8 символов.", "Пароли не совпадают."],
+}
+
 
 class InitialPasswordDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, locale="zh_CN", parent=None):
         super().__init__(parent)
-        self.setWindowTitle("设置管理员密码")
+        self.text = INITIAL_PASSWORD_TEXT.get(locale, INITIAL_PASSWORD_TEXT["zh_CN"])
+        self.setWindowTitle(self.text[0])
         self.setModal(True)
-        self.setFixedWidth(390)
+        self.setFixedSize(560, 350)
         layout = QVBoxLayout(self)
-        title = QLabel("首次登录，请设置新的管理员密码")
+        layout.setContentsMargins(34, 30, 34, 28)
+        layout.setSpacing(10)
+        title = QLabel(self.text[1])
         title.setObjectName("formTitle")
+        title.setWordWrap(True)
+        hint = QLabel(self.text[2])
+        hint.setObjectName("formHint")
+        hint.setWordWrap(True)
         layout.addWidget(title)
-        self.password = QLineEdit(); self.password.setEchoMode(QLineEdit.Password); self.password.setPlaceholderText("至少 8 个字符")
-        self.confirm = QLineEdit(); self.confirm.setEchoMode(QLineEdit.Password); self.confirm.setPlaceholderText("再次输入新密码")
-        layout.addWidget(QLabel("新密码")); layout.addWidget(self.password)
-        layout.addWidget(QLabel("确认密码")); layout.addWidget(self.confirm)
-        self.status = QLabel(); self.status.setObjectName("status"); layout.addWidget(self.status)
-        submit = QPushButton("保存并继续"); submit.setObjectName("loginButton"); submit.clicked.connect(self.validate); layout.addWidget(submit)
+        layout.addWidget(hint)
+        layout.addSpacing(8)
+        self.password = QLineEdit(); self.password.setEchoMode(QLineEdit.Password); self.password.setPlaceholderText(self.text[4])
+        self.confirm = QLineEdit(); self.confirm.setEchoMode(QLineEdit.Password); self.confirm.setPlaceholderText(self.text[6]); self.confirm.returnPressed.connect(self.validate)
+        password_label = QLabel(self.text[3]); password_label.setObjectName("fieldLabel")
+        confirm_label = QLabel(self.text[5]); confirm_label.setObjectName("fieldLabel")
+        layout.addWidget(password_label); layout.addWidget(self.password)
+        layout.addWidget(confirm_label); layout.addWidget(self.confirm)
+        self.status = QLabel(); self.status.setObjectName("status"); self.status.setWordWrap(True); self.status.setMinimumHeight(38); layout.addWidget(self.status)
+        self.submit = QPushButton(self.text[7]); self.submit.setObjectName("loginButton"); self.submit.clicked.connect(self.validate); layout.addWidget(self.submit)
 
     def validate(self):
         if len(self.password.text()) < 8:
-            self.status.setText("密码至少需要 8 个字符。")
+            self.status.setText(self.text[8])
         elif self.password.text() != self.confirm.text():
-            self.status.setText("两次输入的密码不一致。")
+            self.status.setText(self.text[9])
         else:
             self.accept()
 
@@ -221,7 +245,7 @@ class LoginDialog(QDialog):
             return
         self.status.clear()
         if user.must_change_password:
-            password_dialog = InitialPasswordDialog(self)
+            password_dialog = InitialPasswordDialog(self.language.currentData(), self)
             if password_dialog.exec() != QDialog.Accepted:
                 return
             self.db.change_system_password(user.id, password_dialog.password.text())

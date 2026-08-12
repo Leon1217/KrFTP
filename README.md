@@ -19,6 +19,12 @@ krFTP 是一款用于快速配置和管理 FTP 与 SFTP 服务的跨平台桌面
 - **压缩与解压缩**：FTP 支持 `SITE ZIP` / `SITE UNZIP` 命令，SFTP 支持通过已认证 SSH 连接执行 `krftp-zip` / `krftp-unzip`，均受授权目录和权限限制。
 - **系统托盘**：关闭主窗口后服务可继续在系统托盘运行；退出登录不会停止已运行的 FTP/SFTP 服务。
 
+## 系统支持
+
+- 支持 64 位 Windows 系统。
+- 不支持 Windows 7。
+- 不支持 32 位 Windows 设备。
+
 ## 运行
 
 ```powershell
