@@ -1,0 +1,20 @@
+# Python runtime files
+__pycache__/
+*.py[cod]
+
+# Local application state
+data/*.sqlite3
+data/*.sqlite3-*
+data/*/
+i18n/custom/
+
+# Local tooling and editor settings
+.venv/
+venv/
+.idea/
+.vscode/
+
+# Generated previews and operating-system metadata
+login-hint-preview.png
+Thumbs.db
+.DS_Store

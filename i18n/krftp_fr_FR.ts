@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR"><context><name>Common</name>
+<message><source>Login</source><translation>Connexion</translation></message><message><source>Username</source><translation>Nom d'utilisateur</translation></message><message><source>Password</source><translation>Mot de passe</translation></message><message><source>Language</source><translation>Langue</translation></message><message><source>Service Management</source><translation>Gestion des services</translation></message><message><source>Start Service</source><translation>Démarrer le service</translation></message><message><source>Stop Service</source><translation>Arrêter le service</translation></message><message><source>Configure</source><translation>Configurer</translation></message><message><source>Save</source><translation>Enregistrer</translation></message><message><source>Cancel</source><translation>Annuler</translation></message><message><source>About krFTP</source><translation>À propos de krFTP</translation></message>
+</context></TS>
