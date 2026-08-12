@@ -39,9 +39,16 @@ def main() -> int:
 
         QMessageBox.information(None, "krFTP", "krFTP 已在运行，不能重复启动。")
         return 0
-    icon = QIcon(":/images/logo.ico")
+    # Prefer the physical .ico file. It is reliable for the Windows tray in
+    # both source runs and the frozen distribution; the Qt resource remains a fallback.
+    icon = QIcon(str(ICON_PATH))
     if icon.isNull():
-        icon = QIcon(str(ICON_PATH))
+        icon = QIcon(":/images/logo.ico")
+    if icon.isNull():
+        from PySide6.QtWidgets import QMessageBox
+
+        QMessageBox.critical(None, "krFTP", "无法加载程序图标，程序无法启动。")
+        return 1
     app.setWindowIcon(icon)
 
     db = DatabaseManager(DATABASE_PATH)

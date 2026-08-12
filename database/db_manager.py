@@ -120,6 +120,15 @@ class DatabaseManager:
         finally:
             self.close()
 
+    def change_service_user_password(self, user_id: int, password: str) -> None:
+        if len(password) < 8:
+            raise ValueError("密码至少 8 个字符")
+        self.connect()
+        try:
+            User.update(password_hash=hash_password(password), updated_at=datetime.now()).where(User.id == user_id).execute()
+        finally:
+            self.close()
+
     def delete_user(self, user_id: int) -> None:
         self.connect()
         try:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from pathlib import Path
 
@@ -107,6 +108,50 @@ ACTION_LABELS_BY_LOCALE = {
 for _locale in ("es_ES", "fr_FR", "de_DE", "pt_BR", "ru_RU"):
     ACTION_LABELS_BY_LOCALE[_locale] = ACTION_LABELS_EN
 
+PERMISSION_TEXT = {
+    "zh_CN": {"list":"列表查看", "read":"读取", "write":"写入", "append":"追加", "delete_file":"删除文件", "rename_file":"重命名文件", "create_dir":"创建目录", "delete_dir":"删除目录", "rename_dir":"重命名目录", "compress":"压缩", "decompress":"解压"},
+    "en_US": {"list":"List", "read":"Read", "write":"Write", "append":"Append", "delete_file":"Delete files", "rename_file":"Rename files", "create_dir":"Create folders", "delete_dir":"Delete folders", "rename_dir":"Rename folders", "compress":"Compress", "decompress":"Extract"},
+    "zh_TW": {"list":"列表檢視", "read":"讀取", "write":"寫入", "append":"附加", "delete_file":"刪除檔案", "rename_file":"重新命名檔案", "create_dir":"建立目錄", "delete_dir":"刪除目錄", "rename_dir":"重新命名目錄", "compress":"壓縮", "decompress":"解壓縮"},
+    "ja_JP": {"list":"一覧", "read":"読み取り", "write":"書き込み", "append":"追記", "delete_file":"ファイル削除", "rename_file":"ファイル名変更", "create_dir":"フォルダー作成", "delete_dir":"フォルダー削除", "rename_dir":"フォルダー名変更", "compress":"圧縮", "decompress":"展開"},
+    "ko_KR": {"list":"목록", "read":"읽기", "write":"쓰기", "append":"추가", "delete_file":"파일 삭제", "rename_file":"파일 이름 변경", "create_dir":"폴더 만들기", "delete_dir":"폴더 삭제", "rename_dir":"폴더 이름 변경", "compress":"압축", "decompress":"압축 풀기"},
+    "es_ES": {"list":"Listar", "read":"Leer", "write":"Escribir", "append":"Anexar", "delete_file":"Eliminar archivos", "rename_file":"Renombrar archivos", "create_dir":"Crear carpetas", "delete_dir":"Eliminar carpetas", "rename_dir":"Renombrar carpetas", "compress":"Comprimir", "decompress":"Extraer"},
+    "fr_FR": {"list":"Lister", "read":"Lire", "write":"Écrire", "append":"Ajouter", "delete_file":"Supprimer les fichiers", "rename_file":"Renommer les fichiers", "create_dir":"Créer les dossiers", "delete_dir":"Supprimer les dossiers", "rename_dir":"Renommer les dossiers", "compress":"Compresser", "decompress":"Extraire"},
+    "de_DE": {"list":"Auflisten", "read":"Lesen", "write":"Schreiben", "append":"Anhängen", "delete_file":"Dateien löschen", "rename_file":"Dateien umbenennen", "create_dir":"Ordner erstellen", "delete_dir":"Ordner löschen", "rename_dir":"Ordner umbenennen", "compress":"Komprimieren", "decompress":"Entpacken"},
+    "pt_BR": {"list":"Listar", "read":"Ler", "write":"Gravar", "append":"Anexar", "delete_file":"Excluir arquivos", "rename_file":"Renomear arquivos", "create_dir":"Criar pastas", "delete_dir":"Excluir pastas", "rename_dir":"Renomear pastas", "compress":"Compactar", "decompress":"Extrair"},
+    "ru_RU": {"list":"Просмотр", "read":"Чтение", "write":"Запись", "append":"Добавление", "delete_file":"Удаление файлов", "rename_file":"Переименование файлов", "create_dir":"Создание папок", "delete_dir":"Удаление папок", "rename_dir":"Переименование папок", "compress":"Сжатие", "decompress":"Распаковка"},
+}
+
+PERMISSION_COLUMN_TEXT = {
+    "zh_CN": "权限", "en_US": "Permissions", "zh_TW": "權限", "ja_JP": "権限", "ko_KR": "권한",
+    "es_ES": "Permisos", "fr_FR": "Autorisations", "de_DE": "Berechtigungen", "pt_BR": "Permissões", "ru_RU": "Права",
+}
+
+USER_PASSWORD_TEXT = {
+    "zh_CN": ["修改服务用户密码", "新密码", "确认新密码", "至少 8 个字符", "再次输入新密码", "保存", "取消", "两次输入的密码不一致。", "密码已更新。", "全选"],
+    "en_US": ["Change Service User Password", "New password", "Confirm new password", "At least 8 characters", "Enter the new password again", "Save", "Cancel", "The two passwords do not match.", "Password updated.", "Select all"],
+    "zh_TW": ["修改服務使用者密碼", "新密碼", "確認新密碼", "至少 8 個字元", "再次輸入新密碼", "儲存", "取消", "兩次輸入的密碼不一致。", "密碼已更新。", "全選"],
+    "ja_JP": ["サービスユーザーのパスワードを変更", "新しいパスワード", "新しいパスワードの確認", "8 文字以上", "新しいパスワードをもう一度入力", "保存", "キャンセル", "2 回入力したパスワードが一致しません。", "パスワードを更新しました。", "すべて選択"],
+    "ko_KR": ["서비스 사용자 비밀번호 변경", "새 비밀번호", "새 비밀번호 확인", "8자 이상", "새 비밀번호를 다시 입력", "저장", "취소", "두 비밀번호가 일치하지 않습니다.", "비밀번호가 업데이트되었습니다.", "모두 선택"],
+    "es_ES": ["Cambiar contraseña de usuario", "Nueva contraseña", "Confirmar nueva contraseña", "Al menos 8 caracteres", "Vuelva a introducir la nueva contraseña", "Guardar", "Cancelar", "Las dos contraseñas no coinciden.", "Contraseña actualizada.", "Seleccionar todo"],
+    "fr_FR": ["Modifier le mot de passe utilisateur", "Nouveau mot de passe", "Confirmer le mot de passe", "Au moins 8 caractères", "Saisissez à nouveau le nouveau mot de passe", "Enregistrer", "Annuler", "Les deux mots de passe ne correspondent pas.", "Mot de passe mis à jour.", "Tout sélectionner"],
+    "de_DE": ["Dienstbenutzerkennwort ändern", "Neues Kennwort", "Neues Kennwort bestätigen", "Mindestens 8 Zeichen", "Neues Kennwort erneut eingeben", "Speichern", "Abbrechen", "Die beiden Kennwörter stimmen nicht überein.", "Kennwort aktualisiert.", "Alle auswählen"],
+    "pt_BR": ["Alterar senha do usuário", "Nova senha", "Confirmar nova senha", "Pelo menos 8 caracteres", "Digite a nova senha novamente", "Salvar", "Cancelar", "As duas senhas não coincidem.", "Senha atualizada.", "Selecionar tudo"],
+    "ru_RU": ["Изменить пароль пользователя", "Новый пароль", "Подтвердите новый пароль", "Не менее 8 символов", "Введите новый пароль ещё раз", "Сохранить", "Отмена", "Пароли не совпадают.", "Пароль обновлён.", "Выбрать все"],
+}
+
+PERMISSION_DIALOG_TEXT = {
+    "zh_CN": ["选择授权根目录", "无法保存", "授权根目录不存在或不是目录。", "请至少选择一项操作权限。", "请先选择服务用户。", "权限已保存。"],
+    "en_US": ["Select authorized root", "Unable to save", "The authorized root does not exist or is not a directory.", "Select at least one permission.", "Select a service user first.", "Permissions saved."],
+    "zh_TW": ["選擇授權根目錄", "無法儲存", "授權根目錄不存在或不是目錄。", "請至少選擇一項操作權限。", "請先選擇服務使用者。", "權限已儲存。"],
+    "ja_JP": ["許可するルートを選択", "保存できません", "許可するルートが存在しないか、ディレクトリではありません。", "少なくとも 1 つの権限を選択してください。", "サービスユーザーを選択してください。", "権限を保存しました。"],
+    "ko_KR": ["허용된 루트 선택", "저장할 수 없음", "허용된 루트가 없거나 폴더가 아닙니다.", "권한을 하나 이상 선택하세요.", "서비스 사용자를 먼저 선택하세요.", "권한이 저장되었습니다."],
+    "es_ES": ["Seleccionar raíz autorizada", "No se puede guardar", "La raíz autorizada no existe o no es una carpeta.", "Seleccione al menos un permiso.", "Seleccione primero un usuario del servicio.", "Permisos guardados."],
+    "fr_FR": ["Sélectionner la racine autorisée", "Impossible d'enregistrer", "La racine autorisée n'existe pas ou n'est pas un dossier.", "Sélectionnez au moins une autorisation.", "Sélectionnez d'abord un utilisateur.", "Autorisations enregistrées."],
+    "de_DE": ["Freigegebenes Stammverzeichnis auswählen", "Speichern nicht möglich", "Das freigegebene Stammverzeichnis existiert nicht oder ist kein Ordner.", "Wählen Sie mindestens eine Berechtigung aus.", "Wählen Sie zuerst einen Dienstbenutzer aus.", "Berechtigungen gespeichert."],
+    "pt_BR": ["Selecionar raiz autorizada", "Não foi possível salvar", "A raiz autorizada não existe ou não é uma pasta.", "Selecione pelo menos uma permissão.", "Selecione primeiro um usuário do serviço.", "Permissões salvas."],
+    "ru_RU": ["Выберите корневой каталог", "Не удалось сохранить", "Разрешённый корневой каталог не существует или не является папкой.", "Выберите хотя бы одно право.", "Сначала выберите пользователя службы.", "Права сохранены."],
+}
+
 LOG_FILTER_TEXT = {
     "zh_CN": ["全部用户", "全部协议", "全部操作", "IP 地址", "时间范围", "开始时间", "结束时间", "查询", "重置", "每页", "上一页", "下一页", "第 {page} / {pages} 页，共 {total} 条"],
     "en_US": ["All users", "All protocols", "All actions", "IP address", "Time range", "Start time", "End time", "Search", "Reset", "Per page", "Previous", "Next", "Page {page} / {pages}, {total} total"],
@@ -185,17 +230,47 @@ class UserDialog(QDialog):
         return self.username.text().strip(), self.password.text(), expiry
 
 
+class ServiceUserPasswordDialog(QDialog):
+    def __init__(self, username, locale, parent=None):
+        super().__init__(parent)
+        self.text = USER_PASSWORD_TEXT.get(locale, USER_PASSWORD_TEXT["zh_CN"])
+        self.setWindowTitle(f"{self.text[0]}: {username}")
+        self.setMinimumWidth(460)
+        layout = QVBoxLayout(self); layout.setContentsMargins(26, 24, 26, 22); layout.setSpacing(10)
+        form = QFormLayout(); form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.password = QLineEdit(); self.password.setEchoMode(QLineEdit.Password); self.password.setPlaceholderText(self.text[3])
+        self.confirm = QLineEdit(); self.confirm.setEchoMode(QLineEdit.Password); self.confirm.setPlaceholderText(self.text[4]); self.confirm.returnPressed.connect(self.validate)
+        form.addRow(self.text[1], self.password); form.addRow(self.text[2], self.confirm); layout.addLayout(form)
+        self.status = QLabel(); self.status.setObjectName("status"); self.status.setWordWrap(True); self.status.setMinimumHeight(28); layout.addWidget(self.status)
+        buttons = QDialogButtonBox(); save = buttons.addButton(self.text[5], QDialogButtonBox.AcceptRole); buttons.addButton(self.text[6], QDialogButtonBox.RejectRole)
+        save.clicked.connect(self.validate); buttons.rejected.connect(self.reject); layout.addWidget(buttons)
+
+    def validate(self):
+        if len(self.password.text()) < 8:
+            self.status.setText(self.text[3])
+        elif self.password.text() != self.confirm.text():
+            self.status.setText(self.text[7])
+        else:
+            self.accept()
+
+
 class RootPermissionDialog(QDialog):
     def __init__(self, db, user, locale, parent=None):
         super().__init__(parent)
         self.db, self.user, self.locale = db, user, locale
+        self.roots = db.user_roots(user.id)
         text = dialog_text(locale); self.setWindowTitle(f"{text['permission']}: {user.username}")
+        self.setMinimumSize(760, 510)
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(26, 24, 26, 22)
+        layout.setSpacing(14)
         form = QFormLayout()
+        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.protocol = QComboBox()
         self.protocol.addItem(text["ftp_sftp"], "BOTH")
         self.protocol.addItem(text["ftp_only"], "FTP")
         self.protocol.addItem(text["sftp_only"], "SFTP")
+        self.protocol.currentIndexChanged.connect(self._load_saved_permission)
         self.root_path = QLineEdit(str(Path.cwd()))
         browse = QPushButton(text["browse"])
         browse.clicked.connect(self.choose_folder)
@@ -203,37 +278,78 @@ class RootPermissionDialog(QDialog):
         path_row.addWidget(self.root_path)
         path_row.addWidget(browse)
         form.addRow(text["protocol"], self.protocol)
-        form.addRow(text["root"], path_row)
         layout.addLayout(form)
+        root_label = QLabel(text["root"]); root_label.setObjectName("fieldLabel")
+        layout.addWidget(root_label); layout.addLayout(path_row)
+        divider = QFrame(); divider.setFrameShape(QFrame.HLine); divider.setFrameShadow(QFrame.Sunken); layout.addWidget(divider)
         self.checks = {}
+        permission_header = QHBoxLayout()
+        permission_header.addWidget(QLabel(text["permission"]))
+        permission_header.addStretch()
+        self.select_all = QCheckBox(USER_PASSWORD_TEXT.get(locale, USER_PASSWORD_TEXT["zh_CN"])[9])
+        self.select_all.toggled.connect(self._set_all_permissions)
+        permission_header.addWidget(self.select_all)
+        layout.addLayout(permission_header)
         grid = QGridLayout()
-        labels = {
-            "list": "列表查看", "read": "读取", "write": "写入", "append": "追加",
-            "delete_file": "删除文件", "rename_file": "重命名文件", "create_dir": "创建目录",
-            "delete_dir": "删除目录", "rename_dir": "重命名目录", "compress": "压缩", "decompress": "解压",
-        }
+        grid.setHorizontalSpacing(28); grid.setVerticalSpacing(12)
+        labels = PERMISSION_TEXT.get(locale, PERMISSION_TEXT["zh_CN"])
         for index, permission in enumerate(sorted(ALL_PERMISSIONS)):
             check = QCheckBox(labels[permission])
-            check.setChecked(permission in {"list", "read"})
+            check.toggled.connect(self._sync_select_all)
             self.checks[permission] = check
             grid.addWidget(check, index // 3, index % 3)
         layout.addLayout(grid)
+        layout.addStretch()
         buttons = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
         buttons.accepted.connect(self._accept_if_valid)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
+        self._load_saved_permission()
+
+    def _load_saved_permission(self):
+        protocol = self.protocol.currentData()
+        root = next((item for item in self.roots if item.protocol == protocol), None)
+        if root is None and protocol in {"FTP", "SFTP"}:
+            root = next((item for item in self.roots if item.protocol == "BOTH"), None)
+        if root is None:
+            self.root_path.setText(str(Path.cwd()))
+            selected = {"list", "read"} if not self.roots else set()
+        else:
+            self.root_path.setText(root.root_path)
+            try:
+                selected = set(json.loads(root.permissions))
+            except (TypeError, json.JSONDecodeError):
+                selected = set()
+        for permission, check in self.checks.items():
+            check.setChecked(permission in selected)
+        self._sync_select_all()
+
+    def _set_all_permissions(self, checked):
+        for check in self.checks.values():
+            check.blockSignals(True)
+            check.setChecked(checked)
+            check.blockSignals(False)
+
+    def _sync_select_all(self):
+        checked = bool(self.checks) and all(check.isChecked() for check in self.checks.values())
+        self.select_all.blockSignals(True)
+        self.select_all.setChecked(checked)
+        self.select_all.blockSignals(False)
 
     def choose_folder(self):
-        folder = QFileDialog.getExistingDirectory(self, "选择根目录", self.root_path.text())
+        labels = PERMISSION_DIALOG_TEXT.get(self.locale, PERMISSION_DIALOG_TEXT["zh_CN"])
+        folder = QFileDialog.getExistingDirectory(self, labels[0], self.root_path.text())
         if folder:
             self.root_path.setText(folder)
 
     def _accept_if_valid(self):
         if not Path(self.root_path.text()).is_dir():
-            QMessageBox.warning(self, "无法保存", "授权根目录不存在或不是目录。")
+            labels = PERMISSION_DIALOG_TEXT.get(self.locale, PERMISSION_DIALOG_TEXT["zh_CN"])
+            QMessageBox.warning(self, labels[1], labels[2])
             return
         if not any(check.isChecked() for check in self.checks.values()):
-            QMessageBox.warning(self, "无法保存", "请至少选择一项操作权限。")
+            labels = PERMISSION_DIALOG_TEXT.get(self.locale, PERMISSION_DIALOG_TEXT["zh_CN"])
+            QMessageBox.warning(self, labels[1], labels[3])
             return
         self.accept()
 
@@ -282,7 +398,6 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(APP_STYLE)
         self._build_ui()
         self.retranslate_ui()
-        self._create_tray()
         self.refresh_live_data()
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.refresh_live_data)
@@ -342,11 +457,12 @@ class MainWindow(QMainWindow):
         extra = self._extra()
         self.ftp_title.setText(f"FTP {extra['service']}"); self.sftp_title.setText(f"SFTP {extra['service']}")
         self.ftp_config.setText(text[25]); self.sftp_config.setText(text[25]); self.ftp_autostart.setText(text[26]); self.sftp_autostart.setText(text[26])
-        self.users_table.setHorizontalHeaderLabels(extra["user_headers"])
+        self.users_table.setHorizontalHeaderLabels(extra["user_headers"] + [PERMISSION_COLUMN_TEXT.get(self.locale, PERMISSION_COLUMN_TEXT["zh_CN"])])
         self.sessions_table.setHorizontalHeaderLabels(extra["session_headers"])
         self.logs_table.setHorizontalHeaderLabels(extra["log_headers"])
         self.rules_table.setHorizontalHeaderLabels(extra["rule_headers"])
-        for widget, value in ((self.add_user_button, text[31]), (self.toggle_user_button, text[32]), (self.permission_button, text[33]), (self.delete_user_button, text[34]), (self.kick_button, text[35]), (self.add_rule_button, text[37]), (self.save_system_button, text[38])):
+        password_text = USER_PASSWORD_TEXT.get(self.locale, USER_PASSWORD_TEXT["zh_CN"])
+        for widget, value in ((self.add_user_button, text[31]), (self.toggle_user_button, text[32]), (self.permission_button, text[33]), (self.change_user_password_button, password_text[0]), (self.delete_user_button, text[34]), (self.kick_button, text[35]), (self.add_rule_button, text[37]), (self.save_system_button, text[38])):
             widget.setText(value)
         self._retranslate_log_filters()
         dialog = dialog_text(self.locale)
@@ -373,6 +489,12 @@ class MainWindow(QMainWindow):
         if not getattr(self, "_positioned", False):
             self._positioned = True
             self._center_on_screen()
+        if not getattr(self, "_tray_initialized", False):
+            self._tray_initialized = True
+            # Register only after the native window is visible. Windows can
+            # ignore tray registration performed before the event loop owns a
+            # visible top-level window, especially after Explorer restarts.
+            QTimer.singleShot(0, self._create_tray)
 
     def _page_shell(self, title, subtitle, expand=True):
         page = QWidget(); layout = QVBoxLayout(page); layout.setContentsMargins(0, 0, 0, 0); layout.setSpacing(16)
@@ -454,16 +576,17 @@ class MainWindow(QMainWindow):
 
     def _users_page(self):
         page, layout = self._page_shell("用户与权限", "管理账户有效期、访问根目录和协议权限。")
-        self.users_table = QTableWidget(0, 5)
-        self.users_table.setHorizontalHeaderLabels(["服务用户名", "状态", "有效期", "协议范围", "授权根目录"])
+        self.users_table = QTableWidget(0, 6)
+        self.users_table.setHorizontalHeaderLabels(["服务用户名", "状态", "有效期", "协议范围", "授权根目录", "权限"])
         self._configure_table(self.users_table)
         layout.addWidget(self.users_table)
         buttons = QHBoxLayout()
         self.add_user_button = QPushButton("新增用户"); add = self.add_user_button; add.setObjectName("primaryButton"); add.clicked.connect(self.add_user)
         self.toggle_user_button = QPushButton("启用/禁用"); toggle = self.toggle_user_button; toggle.clicked.connect(self.toggle_user)
         self.permission_button = QPushButton("配置权限"); permission = self.permission_button; permission.clicked.connect(self.configure_permissions)
+        self.change_user_password_button = QPushButton("修改密码"); change_password = self.change_user_password_button; change_password.clicked.connect(self.change_service_user_password)
         self.delete_user_button = QPushButton("删除用户"); delete = self.delete_user_button; delete.setObjectName("dangerButton"); delete.clicked.connect(self.delete_user)
-        for button in (add, toggle, permission, delete): buttons.addWidget(button)
+        for button in (add, toggle, permission, change_password, delete): buttons.addWidget(button)
         buttons.addStretch(); layout.addLayout(buttons)
         self.refresh_users()
         return page
@@ -620,14 +743,23 @@ class MainWindow(QMainWindow):
     def refresh_users(self):
         self._service_users = self.db.users(); self.users_table.setRowCount(len(self._service_users))
         for row, user in enumerate(self._service_users):
-            roots = ', '.join(root.root_path for root in self.db.user_roots(user.id))
+            user_roots = self.db.user_roots(user.id)
+            roots = ', '.join(root.root_path for root in user_roots)
             words = dialog_text(self.locale)
             protocol_names = {"BOTH": words["ftp_sftp"], "FTP": words["ftp_only"], "SFTP": words["sftp_only"]}
-            protocols = ', '.join(sorted({protocol_names.get(root.protocol, root.protocol) for root in self.db.user_roots(user.id)})) or self._extra()["not_configured"]
-            values = (user.username, self._extra()["enabled"] if user.is_active else self._extra()["disabled"], user.expires_at.strftime('%F %T') if user.expires_at else words["never"], protocols, roots or self._extra()["not_configured"])
+            protocols = ', '.join(sorted({protocol_names.get(root.protocol, root.protocol) for root in user_roots})) or self._extra()["not_configured"]
+            permissions = set()
+            for root in user_roots:
+                try:
+                    permissions.update(json.loads(root.permissions))
+                except (TypeError, json.JSONDecodeError):
+                    continue
+            labels = PERMISSION_TEXT.get(self.locale, PERMISSION_TEXT["zh_CN"])
+            permission_summary = ', '.join(labels[key] for key in sorted(permissions) if key in labels) or self._extra()["not_configured"]
+            values = (user.username, self._extra()["enabled"] if user.is_active else self._extra()["disabled"], user.expires_at.strftime('%F %T') if user.expires_at else words["never"], protocols, roots or self._extra()["not_configured"], permission_summary)
             for col, value in enumerate(values):
                 self.users_table.setItem(row, col, self._table_item(value))
-        self._resize_table_columns(self.users_table, {0: 180, 1: 140, 2: 185, 3: 180, 4: 360})
+        self._resize_table_columns(self.users_table, {0: 180, 1: 140, 2: 185, 3: 180, 4: 320, 5: 330})
 
     def selected_user(self):
         row = self.users_table.currentRow()
@@ -648,9 +780,29 @@ class MainWindow(QMainWindow):
 
     def configure_permissions(self):
         user = self.selected_user()
-        if user and RootPermissionDialog(self.db, user, self.locale, self).save():
+        if not user:
+            labels = PERMISSION_DIALOG_TEXT.get(self.locale, PERMISSION_DIALOG_TEXT["zh_CN"])
+            QMessageBox.information(self, "krFTP", labels[4])
+            return
+        if RootPermissionDialog(self.db, user, self.locale, self).save():
             self.refresh_users()
-            QMessageBox.information(self, "已保存", f"已保存 {user.username} 的服务访问权限。")
+            labels = PERMISSION_DIALOG_TEXT.get(self.locale, PERMISSION_DIALOG_TEXT["zh_CN"])
+            QMessageBox.information(self, "krFTP", labels[5])
+
+    def change_service_user_password(self):
+        user = self.selected_user()
+        if not user:
+            labels = PERMISSION_DIALOG_TEXT.get(self.locale, PERMISSION_DIALOG_TEXT["zh_CN"])
+            QMessageBox.information(self, "krFTP", labels[4])
+            return
+        dialog = ServiceUserPasswordDialog(user.username, self.locale, self)
+        if dialog.exec() == QDialog.Accepted:
+            try:
+                self.db.change_service_user_password(user.id, dialog.password.text())
+                text = USER_PASSWORD_TEXT.get(self.locale, USER_PASSWORD_TEXT["zh_CN"])
+                QMessageBox.information(self, "krFTP", text[8])
+            except Exception as exc:
+                QMessageBox.warning(self, "krFTP", str(exc))
 
     def delete_user(self):
         user = self.selected_user()
@@ -765,6 +917,9 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "无法保存", str(exc))
 
     def _create_tray(self):
+        if hasattr(self, "tray"):
+            self.tray.show()
+            return
         self.tray = QSystemTrayIcon(self.app_icon, self)
         self.tray_menu = QMenu(self)
         self.tray_show_action = QAction(self); self.tray_show_action.triggered.connect(self.restore_window)
@@ -772,9 +927,24 @@ class MainWindow(QMainWindow):
         self.tray_stop_action = QAction(self); self.tray_stop_action.triggered.connect(self.stop_services)
         self.tray_quit_action = QAction(self); self.tray_quit_action.triggered.connect(self.quit_application)
         self.tray_menu.addAction(self.tray_show_action); self.tray_menu.addSeparator(); self.tray_menu.addAction(self.tray_start_action); self.tray_menu.addAction(self.tray_stop_action); self.tray_menu.addSeparator(); self.tray_menu.addAction(self.tray_quit_action)
-        self.tray.setContextMenu(self.tray_menu); self.tray.activated.connect(lambda reason: self.restore_window() if reason == QSystemTrayIcon.Trigger else None)
+        self.tray.setContextMenu(self.tray_menu)
+        self.tray.activated.connect(self._handle_tray_activation)
         self._retranslate_tray()
         self.tray.show()
+        self.tray_available = QSystemTrayIcon.isSystemTrayAvailable()
+        if not self.tray_available:
+            QTimer.singleShot(1200, self._retry_tray_registration)
+
+    def _retry_tray_registration(self):
+        """Retry once after Explorer finishes restoring its notification area."""
+        if not hasattr(self, "tray"):
+            return
+        self.tray_available = QSystemTrayIcon.isSystemTrayAvailable()
+        self.tray.show()
+
+    def _handle_tray_activation(self, reason):
+        if reason in (QSystemTrayIcon.ActivationReason.Trigger, QSystemTrayIcon.ActivationReason.DoubleClick):
+            self.restore_window()
 
     def _retranslate_tray(self):
         if not hasattr(self, "tray"):
@@ -800,10 +970,14 @@ class MainWindow(QMainWindow):
         self.restore_window()
 
     def quit_application(self):
-        self.tray.hide(); self.services.stop_all(); self._quit_requested = True; self.close()
+        if hasattr(self, "tray"):
+            self.tray.hide()
+        self.services.stop_all(); self._quit_requested = True; self.close()
 
     def closeEvent(self, event):
         if getattr(self, "_quit_requested", False):
             self.services.stop_all(); event.accept()
+        elif not hasattr(self, "tray") or not self.tray_available or not self.tray.isVisible():
+            self.showNormal(); event.ignore()
         else:
             self.hide(); self.tray.showMessage("krFTP", self.tray_tooltip_message, QSystemTrayIcon.Information, 2500); event.ignore()
