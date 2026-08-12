@@ -50,6 +50,12 @@ krFTP 是非商业开源项目，仅供学习、个人使用和非商业部署�
 
 如果觉得 krFTP 好用，欢迎请作者喝一杯咖啡。
 
+If you find krFTP useful, you can support the author with a cup of coffee.
+
+也欢迎前往 [GitHub 项目主页](https://github.com/Leon1217/KrFTP) 点亮 Star，帮助更多人发现 krFTP。
+
+You can also give the project a [GitHub Star](https://github.com/Leon1217/KrFTP) to help more people discover krFTP.
+
 | 微信支付 | 支付宝 |
 | --- | --- |
 | ![微信支付收款码](resource/images/weixin.jpg) | ![支付宝收款码](resource/images/zhifubao.jpg) |
